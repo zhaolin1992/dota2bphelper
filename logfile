@@ -1,0 +1,93 @@
+LOG:  database system was shut down at 2016-05-13 13:54:17 CST
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+FATAL:  database "dam0n" does not exist
+FATAL:  database "zhaolin" does not exist
+FATAL:  database "zhaolin" does not exist
+FATAL:  database "zhaolin" does not exist
+ERROR:  role "dam0n" already exists
+STATEMENT:  CREATE ROLE dam0n NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;
+FATAL:  database "dam0n" does not exist
+FATAL:  database "dam0n" does not exist
+ERROR:  syntax error at or near ")" at character 66
+STATEMENT:  CREATE TABLE dota2_heroes (
+	hero_id int
+	,
+	hero_name varchar(80),
+	);
+ERROR:  syntax error at or near ")" at character 65
+STATEMENT:  CREATE TABLE dota2_heroes (
+	hero_id int,
+	hero_name varchar(80),
+	);
+ERROR:  syntax error at or near ")" at character 65
+STATEMENT:  CREATE TABLE dota2_heroes (
+	hero_id int,
+	hero_name varchar(80),
+	);
+ERROR:  relation "dota2_heroes" already exists
+STATEMENT:  CREATE TABLE dota2_heroes();
+ERROR:  permission denied for relation dota2_heroes
+STATEMENT:  SELECT COUNT(1) FROM "public"."dota2_heroes"
+ERROR:  permission denied for relation dota2_heroes
+STATEMENT:  SELECT * FROM "public"."dota2_heroes" LIMIT 25
+ERROR:  permission denied for relation dota2_heroes
+STATEMENT:  TRUNCATE TABLE "public"."dota2_heroes"
+ERROR:  unrecognized configuration parameter "tables"
+STATEMENT:  show tables;
+ERROR:  syntax error at or near "table" at character 6
+STATEMENT:  show table;
+ERROR:  table "dota2heroes" does not exist
+STATEMENT:  DROP TABLE dota2heroes;
+FATAL:  database "dam0n" does not exist
+ERROR:  syntax error at or near ";" at character 25
+STATEMENT:  CREATE TABLE dota2heroes;
+FATAL:  database "dota2helper" does not exist
+ERROR:  syntax error at or near "ls" at character 1
+STATEMENT:  ls
+	help
+	;
+ERROR:  syntax error at end of input at character 8
+STATEMENT:  CREATE 
+ERROR:  syntax error at or near "exit" at character 1
+STATEMENT:  exit
+	;
+ERROR:  SELECT * with no tables specified is not valid at character 8
+STATEMENT:  select *
+	;
+ERROR:  syntax error at or near "*" at character 6
+STATEMENT:  drop *
+	DROP TABLE dota2_heroes
+	;
+ERROR:  syntax error at or near "frome" at character 10
+STATEMENT:  select * frome dota2bphelper
+	;
+ERROR:  syntax error at or near "frome" at character 10
+STATEMENT:  select * frome dota2bphelper;
+ERROR:  relation "dota2bphelper" does not exist at character 15
+STATEMENT:  select * from dota2bphelper;
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
