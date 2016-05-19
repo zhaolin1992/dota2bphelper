@@ -91,3 +91,19 @@ LOG:  unexpected EOF on client connection with an open transaction
 LOG:  unexpected EOF on client connection with an open transaction
 LOG:  unexpected EOF on client connection with an open transaction
 LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+ERROR:  syntax error at or near "win_rate" at character 7
+STATEMENT:  ALTER win_rate RENAME teamate to teammate;
+ERROR:  syntax error at or near "win_rate" at character 7
+STATEMENT:  ALTER win_rate RENAME teamate TO teammate;
+ERROR:  syntax error at or near ""win_rate"" at character 7
+STATEMENT:  ALTER "win_rate" RENAME teamate TO teammate;
+ERROR:  syntax error at or near "," at character 30
+STATEMENT:  INSERT INTO win_rate [hero_id,total_match,win_match,last_match_seq] VALUES [1,266,153,8480]

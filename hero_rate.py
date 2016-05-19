@@ -19,82 +19,53 @@ statics_db = db_client.match_statics
 
 import psycopg2
 
+psql_conn = psycopg2.connect("host='localhost' dbname=dota2bphelper user=dam0n")
+psql_cursor = psql_conn.cursor()
+
+mongo_db_client = pymongo.MongoClient()
+mongo_db = mongo_db_client.match_statics
 
 def main():
-    if len(sys.argv)>1 and sys.argv[1] == "init":
-        hero_static_init()
+    hero_win_rate()
+
+def hero_win_rate():
+    psql_cursor.execute("SELECT * FROM dota2_hero;")
+    hero_records = psql_cursor.fetchall()
+
+    for record in hero_records:
+        psql_cursor.execute("SELECT * FROM win_rate WHERE hero_id={};".format(int(record[1])))
+        result = psql_cursor.fetchall()
+        if len(result)>0:
+            result_info = get_hero_record(int(record[1]),int(result[0][-1]))
+            if result_info['total_match'] > 0:
+                psql_cursor.execute("UPDATE win_rate \
+                SET total_match={}, win_match={}, last_match_seq={} \
+                WHERE id={}\
+                ".format(result[0][4]+result_info['total_match'],result[0][5]+result_info['win_match'],result[0][4]+result_info['max_seq'],int(result[0][0])))
+                print "."
+            psql_conn.commit()
+        else:
+            result_info = get_hero_record(int(record[1]),0)
+            if result_info['total_match'] > 0:
+                psql_cursor.execute("INSERT INTO win_rate (hero_id,total_match,win_match,last_match_seq) VALUES ({},{},{},{})".format(int(record[1]),result_info['total_match'],result_info['win_match'],result_info['max_seq']))
+            psql_conn.commit()
+        # hero_match = mongo_db.match_record.find({"hero_id":int(record[1])})
+        # hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":int(record[1])},{"win":True}]})
+
+
+def get_hero_record(hero_id,max_seq):
+    hero_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]})
+    hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}},{"win":True}]})
+    hero_info = dict()
+    hero_info['total_match'] = hero_match.count() if hero_match.count() > 0 else 0
+    hero_info['win_match'] = hero_win_match.count() if hero_win_match.count()> 0 else 0
+
+    last_record = mongo_db.match_record.find_one({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]},sort=[("match_seq", -1)])
+    if last_record :
+        hero_info['max_seq'] = last_record["match_seq"]
     else:
-        max_seq = get_last_seq()
-        print max_seq
-        record_match_data(max_seq)
-def get_last_seq():
-    return statics_db.max_solved_seq_num.find({"value_name":"max_solved_seq_num"})[0]["value"]
-
-def record_match_data(min_seq):
-    matches = db.match.find({"match_seq_num": { '$gt': min_seq } })
-    import pdb; pdb.set_trace()
-    for match in matches:
-        if match["human_players"] == 10 and match["duration"] > 1200:
-            data_frame = DataFrame(match["players"])
-            if data_frame['account_id'].nunique() == 10 and data_frame['account_id'].max() != 4294967295:
-                radiant_heroes = data_frame[data_frame['player_slot']<128]['hero_id'].tolist()
-                dire_heroes = data_frame[data_frame['player_slot']>=128]['hero_id'].tolist()
-                for index, row in data_frame.iterrows():
-                    if (row["player_slot"] < 128):
-                        radiant_heroes.remove(row["hero_id"])
-                        teammate = radiant_heroes
-                        opponent = dire_heroes
-                        is_win = bool(match["radiant_win"])
-                    else:
-                        dire_heroes.remove(row["hero_id"])
-                        teammate = dire_heroes
-                        opponent = radiant_heroes
-                        is_win = not bool(match["radiant_win"])
-                    record_json = json.loads(row.to_json())
-                    record_json['win'] = is_win
-                    record_json['match_id'] = match['match_id']
-                    record_json['teammate'] = teammate
-                    record_json['opponent'] = opponent
-
-                    item = []
-
-                    for x in range(0,6):
-                        if record_json["item_{}".format(x)]>0:
-                            item.append(record_json["item_{}".format(x)])
-                        del record_json["item_{}".format(x)]
-                        del record_json["item_{}_name".format(x)]
-
-                    record_json['item'] = item
-
-                    count = statics_db.match_record.find({'$and':[{'account_id':row['account_id']},{'match_id':match['match_id']}]}).count()
-                    if count == 0:
-                        statics_db.match_record.insert_one(record_json)
-                    print '.'
-                print '/'
-                max_solved_seq_num = max(statics_db.max_solved_seq_num.find({"value_name":"max_solved_seq_num"})[0]["value"],match["match_seq_num"])
-                statics_db.max_solved_seq_num.update_one(
-                    {"value_name":"max_solved_seq_num"},
-                    {
-                        "$set":
-                        {
-                            "value":max_solved_seq_num
-                        },
-                        "$currentDate": {"lastModified": True}
-                    }
-                )
-def hero_static_init():
-    statics_db.max_solved_seq_num.drop()
-    statics_db.max_solved_seq_num.insert_one({"value_name":"max_solved_seq_num","value":0})
-    statics_db.match_record.drop()
-
-    conn = psycopg2.connect("host='localhost' dbname=dota2bphelper user=dam0n")
-    cursor = conn.cursor()
-    cursor.execute("SELECT id FROM dota2_hero;")
-    # records = cursor.fetchall()
-    # for r in records:
-    #         r[0]
-    conn.close()
-
+        hero_info['max_seq'] = 0
+    return hero_info
 
 if __name__ == '__main__':
     main()

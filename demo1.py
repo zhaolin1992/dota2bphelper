@@ -42,16 +42,26 @@ class Application(tornado.web.Application):
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         psql_cursor = self.application.psql
-        psql_cursor.execute("SELECT id FROM dota2_hero;")
-        match_records = psql_cursor.fetchall()
+        psql_cursor.execute("SELECT * FROM dota2_hero;")
+        hero_records = psql_cursor.fetchall()
 
         mongo_db = self.application.db
         print '.'
-        for record in match_records:
-                hero_match = mongo_db.match_record.find({"hero_id":int(record[0])})
-                hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":int(record[0])},{"win":True}]})
-                print int(record[0])
-                print str(hero_win_match.count())+"/"+str(hero_match.count())
+        heroes_match_info = []
+        for record in hero_records:
+            hero_match = mongo_db.match_record.find({"hero_id":int(record[1])})
+            hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":int(record[1])},{"win":True}]})
+            hero_info = dict()
+            hero_info['name'] = record[2]
+            hero_info['total_match'] = hero_match.count()
+            hero_info['win_match'] = hero_win_match.count()
+            hero_info['image_url'] = record[6]
+            heroes_match_info.append(hero_info)
+        self.render("index.html",
+        page_title="hero win rate",
+        info=heroes_match_info,
+        )
+
 def main():
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
