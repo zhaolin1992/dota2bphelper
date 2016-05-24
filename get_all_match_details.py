@@ -6,6 +6,7 @@ from pymongo import MongoClient
 import time
 import pymongo
 import pdb
+import logging
 
 from api_key import API_KEY
 
@@ -16,13 +17,16 @@ api = dota2api2.Initialise(API_KEY)
 db_client = MongoClient()
 db = db_client.match_data_details
 
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+
 def main():
     c = 1
     while (c>0):
         start_match_seq=get_last_seq()
-        print "last seq:"+str(start_match_seq)
+        logging.info("last seq:"+str(start_match_seq))
         c = store_match(start_match_seq)
-        print "this time got:"+str(c)
+        logging.info("this time got:"+str(c))
 
 
 def get_last_seq():
@@ -38,18 +42,19 @@ def store_match(start_match_seq):
                 hist = api.get_match_history_by_seq_num(start_at_match_seq_num=start_match_seq+1)
             break
         except dota2api2.exceptions.APITimeoutError:
-            print "timeout"
+            logging("timeout")
     for match_item in hist['matches']:
         if match_item['human_players'] < 10 or match_item['duration'] < 1200:
-            print '*'
+            logging.info('*')
             continue
         for i in range(1,100):
             try:
                 match_detail = api.get_match_details(match_id=match_item['match_id'])
-                print "got detail:"+str(match_item['match_seq_num'])
+                logging.info("got detail:"+str(match_item['match_seq_num']))
+                #print("got detail:"+str(match_item['match_seq_num']))
                 break
             except dota2api2.exceptions.APITimeoutError:
-                print "timeout"
+                logging.info("timeout")
         #match_detail = match_item
         db.match.insert_one(match_detail)
 
@@ -81,7 +86,7 @@ def store_match(start_match_seq):
         else:
             db.all_match_statics.insert_one({"match_code":lobby_str,"count":1})
         #game mode
-        if match_detail.has_key('game_mode'):
+        if 'game_mode' in match_detail:
             mode_str = "mode:"+str(match_detail['game_mode'])
             if db.all_match_statics.find({"match_code":mode_str}).count() > 0:
                 db.all_match_statics.update_one(

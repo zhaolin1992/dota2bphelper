@@ -18,14 +18,17 @@ db = db_client.match_data_details
 statics_db = db_client.match_statics
 
 import psycopg2
+import logging
 
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
 
 def main():
     if len(sys.argv)>1 and sys.argv[1] == "init":
         hero_static_init()
     else:
         max_seq = get_last_seq()
-        print max_seq
+        logging.info(max_seq)
         record_match_data(max_seq)
 def get_last_seq():
     return statics_db.max_solved_seq_num.find({"value_name":"max_solved_seq_num"})[0]["value"]
@@ -72,8 +75,6 @@ def record_match_data(min_seq):
                 count = statics_db.match_record.find({'$and':[{'hero_id':row['hero_id']},{'match_id':match['match_id']}]}).count()
                 if count == 0:
                     statics_db.match_record.insert_one(record_json)
-                print '.',
-            print '/',
             max_solved_seq_num = max(statics_db.max_solved_seq_num.find({"value_name":"max_solved_seq_num"})[0]["value"],match["match_seq_num"])
             statics_db.max_solved_seq_num.update_one(
                 {"value_name":"max_solved_seq_num"},
@@ -85,6 +86,7 @@ def record_match_data(min_seq):
                     "$currentDate": {"lastModified": True}
                 }
             )
+            logging.info("match handle:"+str(max_solved_seq_num))
 def hero_static_init():
     statics_db.max_solved_seq_num.drop()
     statics_db.max_solved_seq_num.insert_one({"value_name":"max_solved_seq_num","value":0})

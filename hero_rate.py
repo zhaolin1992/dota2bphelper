@@ -18,6 +18,10 @@ db = db_client.match_data_details
 statics_db = db_client.match_statics
 
 import psycopg2
+import logging
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
 
 psql_conn = psycopg2.connect("host='localhost' dbname=dota2bphelper user=dam0n")
 psql_cursor = psql_conn.cursor()
@@ -42,7 +46,6 @@ def hero_win_rate():
                 SET total_match={}, win_match={}, last_match_seq={} \
                 WHERE id={}\
                 ".format(result[0][4]+result_info['total_match'],result[0][5]+result_info['win_match'],result[0][4]+result_info['max_seq'],int(result[0][0])))
-                print "."
             psql_conn.commit()
         else:
             result_info = get_hero_record(int(record[1]),0)
