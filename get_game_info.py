@@ -6,10 +6,11 @@ import numpy as np
 
 import sqlalchemy
 
-from api_key import API_KEY
+from settings import API_KEY
+import settings
 ACCOUNT_ID = 172282397
 
-mysql_engine = sqlalchemy.create_engine('postgresql://dam0n@localhost/dota2bphelper')
+mysql_engine = sqlalchemy.create_engine("postgresql://{}@localhost/{}".format(settings.PSQL_USER,settings.PSQL_DB))
 #mysql_engine = sqlalchemy.create_engine('mysql+pymysql://root@localhost/bp_helper_db?charset=utf8')
 connection = mysql_engine.connect()
 api = dota2api2.Initialise(API_KEY)

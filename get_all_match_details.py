@@ -28,7 +28,7 @@ def main():
         c = store_match(start_match_seq)
         logging.info("this time got:"+str(c))
 
-
+ 
 def get_last_seq():
     return db.max_seq_num.find({"value_name":"max_seq_num"})[0]["value"]
 
