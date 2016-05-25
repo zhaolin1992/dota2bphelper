@@ -92,7 +92,7 @@ def hero_static_init():
     statics_db.max_solved_seq_num.insert_one({"value_name":"max_solved_seq_num","value":0})
     statics_db.match_record.drop()
 
-    conn = psycopg2.connect("host='localhost' dbname=dota2bphelper user=dam0n")
+    conn = psycopg2.connect("host='localhost' dbname={} user={}".format(settings.PSQL_DB,settings.PSQL_USER))
     cursor = conn.cursor()
     cursor.execute("SELECT id FROM dota2_hero;")
     # records = cursor.fetchall()
