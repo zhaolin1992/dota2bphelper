@@ -19,11 +19,12 @@ statics_db = db_client.match_statics
 
 import psycopg2
 import logging
+import settings
 
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
 
-psql_conn = psycopg2.connect("host='localhost' dbname=dota2bphelper user=dam0n")
+psql_conn = psycopg2.connect("host='localhost' dbname={} user={}".format(settings.PSQL_DB,settings.PSQL_USER))
 psql_cursor = psql_conn.cursor()
 
 mongo_db_client = pymongo.MongoClient()

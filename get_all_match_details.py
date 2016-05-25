@@ -8,7 +8,7 @@ import pymongo
 import pdb
 import logging
 
-from api_key import API_KEY
+from settings import API_KEY
 
 ACCOUNT_ID = 172282397
 
