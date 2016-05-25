@@ -56,7 +56,8 @@ def hero_win_rate():
         print('.')
         # hero_match = mongo_db.match_record.find({"hero_id":int(record[1])})
         # hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":int(record[1])},{"win":True}]})
-
+    psql_cursor.close()
+    psql_conn.close()
 
 def get_hero_record(hero_id,max_seq):
     hero_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]})
