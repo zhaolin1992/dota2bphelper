@@ -53,6 +53,7 @@ def hero_win_rate():
             if result_info['total_match'] > 0:
                 psql_cursor.execute("INSERT INTO win_rate (hero_id,total_match,win_match,last_match_seq) VALUES ({},{},{},{})".format(int(record[1]),result_info['total_match'],result_info['win_match'],result_info['max_seq']))
             psql_conn.commit()
+        print('.')
         # hero_match = mongo_db.match_record.find({"hero_id":int(record[1])})
         # hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":int(record[1])},{"win":True}]})
 
