@@ -31,7 +31,8 @@ mongo_db_client = pymongo.MongoClient()
 mongo_db = mongo_db_client.match_statics
 
 def main():
-    hero_win_rate()
+    while true:
+        hero_win_rate()
 
 def hero_win_rate():
     psql_cursor.execute("SELECT * FROM dota2_hero;")
