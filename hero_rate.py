@@ -31,7 +31,7 @@ mongo_db_client = pymongo.MongoClient()
 mongo_db = mongo_db_client.match_statics
 
 def main():
-    while true:
+    while True:
         hero_win_rate()
 
 def hero_win_rate():
