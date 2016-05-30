@@ -20,8 +20,8 @@ statics_db = db_client.match_statics
 import psycopg2
 import logging
 
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def main():
     if len(sys.argv)>1 and sys.argv[1] == "init":

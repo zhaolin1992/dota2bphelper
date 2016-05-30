@@ -21,8 +21,8 @@ import psycopg2
 import logging
 import settings
 
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 psql_conn = psycopg2.connect("host='localhost' dbname={} user={}".format(settings.PSQL_DB,settings.PSQL_USER))
 psql_cursor = psql_conn.cursor()
