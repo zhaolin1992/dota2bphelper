@@ -7,6 +7,7 @@ import time
 import pymongo
 import pdb
 import logging
+import sys
 
 from settings import API_KEY
 
@@ -17,8 +18,7 @@ api = dota2api2.Initialise(API_KEY)
 db_client = MongoClient()
 db = db_client.match_data_details
 
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
     c = 1
@@ -28,7 +28,7 @@ def main():
         c = store_match(start_match_seq)
         logging.info("this time got:"+str(c))
 
- 
+
 def get_last_seq():
     return db.max_seq_num.find({"value_name":"max_seq_num"})[0]["value"]
 
@@ -42,7 +42,7 @@ def store_match(start_match_seq):
                 hist = api.get_match_history_by_seq_num(start_at_match_seq_num=start_match_seq+1)
             break
         except dota2api2.exceptions.APITimeoutError:
-            logging("timeout")
+            logging.info("timeout")
     for match_item in hist['matches']:
         if match_item['human_players'] < 10 or match_item['duration'] < 1200:
             logging.info('*')
