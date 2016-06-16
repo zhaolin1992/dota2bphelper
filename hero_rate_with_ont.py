@@ -31,8 +31,7 @@ mongo_db_client = pymongo.MongoClient()
 mongo_db = mongo_db_client.match_statics
 
 def main():
-    while True:
-        hero_win_rate()
+    get_hero_record(8,0,[1],[4,6])
 
 def hero_win_rate():
     psql_cursor.execute("SELECT * FROM dota2_hero;")
@@ -60,12 +59,24 @@ def hero_win_rate():
     psql_cursor.close()
     psql_conn.close()
 
-def get_hero_record(hero_id,max_seq):
-    hero_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]})
-    hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}},{"win":True}]})
+def get_hero_record(hero_id,max_seq,opponents,teammates):
+
+    query_arr=[]
+    for opponent in opponents:
+        query_arr.append({"opponent":opponent})
+    for teammate in teammates:
+        query_arr.append({"teammate":teammate})
+    query_arr.append({"hero_id":hero_id})
+    query_arr.append({"match_seq":{"$gt":max_seq}})
+    # hero_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]})
+    # hero_win_match = mongo_db.match_record.find({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}},{"win":True}]})
+    hero_match = mongo_db.match_record.find({"$and":query_arr})
+    query_arr.append({"win":True})
+    hero_win_match = mongo_db.match_record.find({"$and":query_arr})
     hero_info = dict()
     hero_info['total_match'] = hero_match.count() if hero_match.count() > 0 else 0
     hero_info['win_match'] = hero_win_match.count() if hero_win_match.count()> 0 else 0
+
 
     last_record = mongo_db.match_record.find_one({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]},sort=[("match_seq", -1)])
     if last_record :

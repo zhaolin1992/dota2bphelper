@@ -1,4 +1,4 @@
-import dota2api2
+import dota2api
 from pymongo import MongoClient
 import time
 import pymongo

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf-8
 
-import dota2api2
+import dota2api
 from pymongo import MongoClient
 import time
 import pymongo
@@ -14,7 +14,7 @@ from api_key import API_KEY
 ACCOUNT_ID = 172282397
 
 
-api = dota2api2.Initialise(API_KEY)
+api = dota2api.Initialise(API_KEY)
 db_client = MongoClient()
 db = db_client.match_data_details
 

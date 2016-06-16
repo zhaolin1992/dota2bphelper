@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf-8
 
-import dota2api2
+import dota2api
 from pymongo import MongoClient
 import time
 import pymongo
@@ -14,7 +14,7 @@ from settings import API_KEY
 ACCOUNT_ID = 172282397
 
 
-api = dota2api2.Initialise(API_KEY)
+api = dota2api.Initialise(API_KEY)
 db_client = MongoClient()
 db = db_client.match_data_details
 
@@ -41,7 +41,7 @@ def store_match(start_match_seq):
             else:
                 hist = api.get_match_history_by_seq_num(start_at_match_seq_num=start_match_seq+1)
             break
-        except dota2api2.exceptions.APITimeoutError:
+        except dota2api.exceptions.APITimeoutError:
             logging.info("timeout")
     for match_item in hist['matches']:
         if match_item['human_players'] < 10 or match_item['duration'] < 1200:
@@ -53,7 +53,7 @@ def store_match(start_match_seq):
                 logging.info("got detail:"+str(match_item['match_seq_num']))
                 #print("got detail:"+str(match_item['match_seq_num']))
                 break
-            except dota2api2.exceptions.APITimeoutError:
+            except dota2api.exceptions.APITimeoutError:
                 logging.info("timeout")
         #match_detail = match_item
         db.match.insert_one(match_detail)
