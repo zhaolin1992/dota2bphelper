@@ -44,7 +44,7 @@ def store_match(start_match_seq):
         except dota2api.exceptions.APITimeoutError:
             logging.info("timeout")
     for match_item in hist['matches']:
-        if match_item['human_players'] < 10 or match_item['duration'] < 1200:
+        if match_item['human_players'] < 10 or match_item['duration'] < 300:
             logging.info('*')
             continue
         for i in range(1,100):
