@@ -77,7 +77,6 @@ def get_hero_record(hero_id,max_seq,opponents,teammates):
     hero_info['total_match'] = hero_match.count() if hero_match.count() > 0 else 0
     hero_info['win_match'] = hero_win_match.count() if hero_win_match.count()> 0 else 0
 
-
     last_record = mongo_db.match_record.find_one({"$and":[{"hero_id":hero_id},{"match_seq":{"$gt":max_seq}}]},sort=[("match_seq", -1)])
     if last_record :
         hero_info['max_seq'] = last_record["match_seq"]
