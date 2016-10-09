@@ -73,11 +73,12 @@ def get_and_store_match_detail(start_match_seq):
                 #print("got detail:"+str(match_item['match_seq_num']))
                 break
             except dota2api.exceptions.APITimeoutError:
-                logging.info("timeout")
+                logging.error("timeout")
         #match_detail = match_item
         # db.match.insert_one(match_detail)
 
         if (ret == 1):
+            import pdb; pdb.set_trace()
             update_max_seq(match_item['match_seq_num'])
             counter += 1
     return counter
@@ -100,13 +101,28 @@ def update_max_seq(seq):
 
 def save_match_detail_by_id(match_id):
     if db.match.find({"match_id":match_id}).count() == 0:
-        logging.info("save:"+str(match_id))
+        logging.debug("save:"+str(match_id))
         match_detail = api.get_match_details(match_id=match_id)
         db.match.insert(match_detail)
+        pull_unfetched(match_id)
         return 1
     else:
-        logging.info("not save:"+str(match_id))
+        logging.warning("not save:"+str(match_id))
         return 0
+
+def push_unfetched(match_id):
+    if db.unfetch.find({"match_id":match_id}).count() == 0:
+        db.unfetch.insert({"match_id":match_id})
+        logging.debug("add fetching:"+str(match_id))
+    else:
+        logging.error("match id duplicate:"+str(match_id))
+
+def pull_unfetched(match_id):
+    if db.unfetch.find({"match_id":match_id}).count() > 0:
+        db.unfetch.remove({"match_id":match_id})
+        logging.debug("remove fetching:"+str(match_id))
+    else:
+        logging.error("match id num error:"+str(match_id))
 
 def __get_player_data(user_id,start_id):
     min_start_id = 0xFFFFFFFF

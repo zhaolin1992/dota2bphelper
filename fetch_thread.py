@@ -3,10 +3,15 @@ import time
 
 from tornado import httpclient, gen, ioloop, queues
 
-concurrency = 10
+concurrency = 100
 
 @gen.coroutine
 def main():
+    while True:
+        yield fetch_match()
+
+@gen.coroutine
+def fetch_match():
     q = queues.Queue()
     start = time.time()
     fetching, fetched = set(), set()
@@ -43,10 +48,12 @@ def main():
     match_gen = get_match_id_arr(start_match_seq)
 
     for match in match_gen:
+        push_unfetched(match)
         if match > last_seq:
             last_seq = match
         q.put(match)
-
+    update_max_seq(last_seq)
+    logging.info("this seq:"+str(last_seq))
     # Start workers, then wait for the work queue to be empty.
     for _ in range(concurrency):
         worker()
@@ -56,7 +63,7 @@ def main():
     if fetching == fetched:
         print('Done in %d seconds, fetched %s matches.' % (
              time.time() - start, len(fetched)))
-        update_max_seq(last_seq)
+
 
 
 
